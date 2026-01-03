@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
+
 
 class Student {
 public:
@@ -18,6 +20,7 @@ public:
         this->grade = grade;
     }
 };
+
 
 void addStudent(vector<Student>& students) {
     int id;
@@ -54,7 +57,7 @@ void searchStudentById(const vector<Student>& students) {
             return;
         }
     }
-} 
+}
 
 void deleteStudentById(vector<Student>& students) {
     int id;
@@ -86,23 +89,63 @@ int main() {
         cin >> choice;
 
         switch (choice) {
-        case 1:
-            addStudent(students);
-            break;
-        case 2:
-            searchStudentById(students);
-            break;
-        case 3:
-            deleteStudentById(students);
-            break;
-        case 4:
-            cout << "Exiting program...\n";
-            break;
-        default:
-            cout << "Invalid choice.\n";
+            case 1:
+                addStudent(students);
+                break;
+            case 2:
+                searchStudentById(students);
+                break;
+            case 3:
+                deleteStudentById(students);
+                break;
+            case 4:
+                cout << "Exiting program...\n";
+                break;
+            default:
+                cout << "Invalid choice.\n";
         }
 
     } while (choice != 4);
 
     return 0;
+}
+
+
+// RB
+bool idExists(const vector<Student>& students, int id) {
+    for (const auto& s : students) {
+        if (s.id == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+void saveStudentsToFile(const vector<Student>& students) {
+    ofstream file("students.txt");
+
+    for (const auto& s : students) {
+        file << s.id << " "
+             << s.name << " "
+             << s.surname << " "
+             << s.grade << endl;
+    }
+
+    file.close();
+}
+
+
+void loadStudentsFromFile(vector<Student>& students) {
+    ifstream file("students.txt");
+
+    int id;
+    string name, surname;
+    double grade;
+
+    while (file >> id >> name >> surname >> grade) {
+        students.push_back(Student(id, name, surname, grade));
+    }
+
+    file.close();
 }
